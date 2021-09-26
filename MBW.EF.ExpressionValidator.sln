@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Global", "Global", "{B917AB
 		.gitignore = .gitignore
 		Directory.Build.props = Directory.Build.props
 		_Imports\Local.targets = _Imports\Local.targets
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EA89C7CC-E9F3-45AB-B12A-2A9C12593443}"

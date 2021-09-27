@@ -18,30 +18,75 @@ Using this project, it is possible to validate that all queries made can succesf
 | MBW.EF.ExpressionValidator.SqlServer | [![Nuget](https://img.shields.io/nuget/v/MBW.EF.ExpressionValidator.SqlServer)](https://www.nuget.org/packages/MBW.EF.ExpressionValidator.SqlServer/) | Addon using `Microsoft.EntityFrameworkCore.SqlServer` |
 | MBW.EF.ExpressionValidator.PomeloMysql | [![Nuget](https://img.shields.io/nuget/v/MBW.EF.ExpressionValidator.PomeloMysql)](https://www.nuget.org/packages/MBW.EF.ExpressionValidator.PomeloMysql/) | Addon using `Pomelo.EntityFrameworkCore.MySql` |
 
-# Usage
+# Usage example
+
+This example is for a common use case: Using EntityFramework in an Asp.Net website.
 
 Reference a package from above, depending on your target database, and then add it to your in-memory database context builder:
 
 ```csharp
-var services = new ServiceCollection();
+public class Startup
+{
+    public Startup(IConfiguration configuration, IHostEnvironment environment)
+    {
+        Configuration = configuration;
+        Environment = environment;
+    }
 
-// When adding your DbContext to your Dependency Injection, 
-// use the relevant extension methods to add validation.
-services
-        .AddDbContext<Context>(x => x.UseInMemoryDatabase(nameof(UseCaseAddDbContext))
-            .AddSqliteExpressionValidation<Context>()
-            .AddMysqlExpressionValidation<Context>()
-            .AddSqlServerExpressionValidation<Context>());
-        
-var serviceProvider = services.BuildServiceProvider();
+    public IConfiguration Configuration { get; }
+    public IHostEnvironment Environment { get; }
 
-// Use the database like you normally would
-var db = serviceProvider.GetService<Context>();
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddControllersWithViews();
 
-// A query like this, would work - and will therefore also work in actual Mysql, Mssql and Sqlite databases.
-db.Blogs.Where(s => s.Id == 4).ToList();
+        // ... add other services
 
-// A query like this could work in the in memory database, but not in actual databases
-// The expression validation will catch this, and throw an exception
-db.Blogs.Where(s => s.Title.ToCharArray().Length == 2).ToList();
+        // Add our DatabaseContext to our DI system - this switches implementation based on our hosting environment
+        services.AddDbContext<DatabaseContext>(builder =>
+        {
+            // Only add validation when using the inmemory database. This ensures we don't have any adverse effect when running production environments
+            if (Environment.IsDevelopment())
+            {
+                // In development, we want to use the in memory database with query validation
+                // This ensures that in staging and production, we will know that any query made in development will successfully translate to SQL
+                builder.UseInMemoryDatabase("LocalDatabase")
+                    .AddMysqlExpressionValidation<DatabaseContext>();
+            }
+            else
+            {
+                // When in any other environment, we want to use an actual MySql database
+                // Here, we will _not_ add validation
+                builder.UseMySql("Server=localhost", new MySqlServerVersion(new Version(8, 0, 25)));
+            }
+        });
+    }
+}
+```
+
+Now - we can use our context like normal, but we'll know that all queries can translate to SQL.
+
+```csharp
+public class HomeController : Controller
+{
+    private readonly DatabaseContext _context;
+
+    public HomeController(DatabaseContext context)
+    {
+        _context = context;
+    }
+
+    public IActionResult Index()
+    {
+        // A query like this can easily translate to SQL and will always work
+        _context.BlogPosts.Where(s => s.Id == 4).ToList();
+
+        // A query like this could work in the in memory database, but not in actual databases
+        // The expression validation will catch this, and throw an exception
+        // This ensures that during local testing, we will not end up with a query that won't work in Mysql
+        _context.BlogPosts.Where(s => s.Title.ToCharArray().Length == 2).ToList();
+
+        return View();
+    }
+}
 ```

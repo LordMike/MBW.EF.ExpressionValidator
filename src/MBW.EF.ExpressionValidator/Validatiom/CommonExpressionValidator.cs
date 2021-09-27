@@ -9,10 +9,14 @@ namespace MBW.EF.ExpressionValidator.Validatiom
 {
     public abstract class CommonExpressionValidator<TContext> : ExpressionValidatorBase where TContext : DbContext
     {
-        private readonly IDatabase _db;
-        private readonly RewritingExpressionVisitor<TContext> _expressionVisitor;
+        private IDatabase _db;
+        private RewritingExpressionVisitor<TContext> _expressionVisitor;
 
         public CommonExpressionValidator(string databaseKind) : base(databaseKind)
+        {
+        }
+
+        private void InitializeValidationDatabase()
         {
             ServiceProvider serviceProvider = new ServiceCollection()
                 .AddDbContext<TContext>(Configure)
@@ -29,6 +33,9 @@ namespace MBW.EF.ExpressionValidator.Validatiom
 
         public sealed override void CompileQuery<TResult>(Expression query)
         {
+            if (_db == null)
+                InitializeValidationDatabase();
+
             query = _expressionVisitor.Visit(query);
             _db.CompileQuery<TResult>(query, false);
         }

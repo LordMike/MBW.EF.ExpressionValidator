@@ -17,3 +17,31 @@ Using this project, it is possible to validate that all queries made can succesf
 | MBW.EF.ExpressionValidator.Sqlite | [![Nuget](https://img.shields.io/nuget/v/MBW.EF.ExpressionValidator.Sqlite)](https://www.nuget.org/packages/MBW.EF.ExpressionValidator.Sqlite/) | Addon using `MBW.EF.ExpressionValidator.Sqlite` |
 | MBW.EF.ExpressionValidator.SqlServer | [![Nuget](https://img.shields.io/nuget/v/MBW.EF.ExpressionValidator.SqlServer)](https://www.nuget.org/packages/MBW.EF.ExpressionValidator.SqlServer/) | Addon using `Microsoft.EntityFrameworkCore.SqlServer` |
 | MBW.EF.ExpressionValidator.PomeloMysql | [![Nuget](https://img.shields.io/nuget/v/MBW.EF.ExpressionValidator.PomeloMysql)](https://www.nuget.org/packages/MBW.EF.ExpressionValidator.PomeloMysql/) | Addon using `Pomelo.EntityFrameworkCore.MySql` |
+
+# Usage
+
+Reference a package from above, depending on your target database, and then add it to your in-memory database context builder:
+
+```csharp
+var services = new ServiceCollection();
+
+// When adding your DbContext to your Dependency Injection, 
+// use the relevant extension methods to add validation.
+services
+        .AddDbContext<Context>(x => x.UseInMemoryDatabase(nameof(UseCaseAddDbContext))
+            .AddSqliteExpressionValidation<Context>()
+            .AddMysqlExpressionValidation<Context>()
+            .AddSqlServerExpressionValidation<Context>());
+        
+var serviceProvider = services.BuildServiceProvider();
+
+// Use the database like you normally would
+var db = serviceProvider.GetService<Context>();
+
+// A query like this, would work - and will therefore also work in actual Mysql, Mssql and Sqlite databases.
+db.Blogs.Where(s => s.Id == 4).ToList();
+
+// A query like this could work in the in memory database, but not in actual databases
+// The expression validation will catch this, and throw an exception
+db.Blogs.Where(s => s.Title.ToCharArray().Length == 2).ToList();
+```

@@ -13,7 +13,7 @@ namespace MBW.EF.ExpressionValidator.Helpers
     ///
     /// Author: Laurents Meyer (https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql/issues/1514#issuecomment-925851476)
     /// </summary>
-    public class RewritingExpressionVisitor<TContext> : ExpressionVisitor where TContext : DbContext
+    internal class RewritingExpressionVisitor<TContext> : ExpressionVisitor where TContext : DbContext
     {
         private readonly IModel _model;
         private readonly IAsyncQueryProvider _asyncQueryProvider;

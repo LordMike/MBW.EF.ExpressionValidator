@@ -23,6 +23,7 @@ namespace MBW.EF.ExpressionValidator.Tests
                 .AddDbContext<Context>(x => x.UseInMemoryDatabase(nameof(UseCaseAddDbContext))
                     .AddSqliteExpressionValidation<Context>()
                     .AddMysqlExpressionValidation<Context>()
+                    .AddMariaDbExpressionValidation<Context>()
                     .AddSqlServerExpressionValidation<Context>())
                 .BuildServiceProvider();
 
@@ -50,7 +51,7 @@ namespace MBW.EF.ExpressionValidator.Tests
         public void TestInvalidQuery()
         {
             ExpressionValidationException exception = Assert.Throws<ExpressionValidationException>(() => _db.BlogPosts.Where(x => LocalFunction(x)).ToList());
-            Assert.Equal(3, exception.DatabaseTargets.Length);
+            Assert.Equal(4, exception.DatabaseTargets.Length);
             Assert.All(exception.InnerExceptions, e => Assert.IsType<InvalidOperationException>(e));
         }
 

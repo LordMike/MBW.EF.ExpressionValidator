@@ -31,6 +31,7 @@ namespace MBW.EF.ExpressionValidator.Tests
                 .AddSqliteExpressionValidation()
                 .AddSqlServerExpressionValidation()
                 .AddMysqlExpressionValidation()
+                .AddMariaDbExpressionValidation()
                 .Options);
 
             _db = ctx;
@@ -56,7 +57,7 @@ namespace MBW.EF.ExpressionValidator.Tests
         public void TestInvalidQuery()
         {
             ExpressionValidationException exception = Assert.Throws<ExpressionValidationException>(() => _db.BlogPosts.Where(x => LocalFunction(x)).ToList());
-            Assert.Equal(3, exception.DatabaseTargets.Length);
+            Assert.Equal(4, exception.DatabaseTargets.Length);
             Assert.All(exception.InnerExceptions, e => Assert.IsType<InvalidOperationException>(e));
         }
 

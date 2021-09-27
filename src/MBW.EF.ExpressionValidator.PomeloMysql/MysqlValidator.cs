@@ -1,19 +1,21 @@
-﻿using System;
-using MBW.EF.ExpressionValidator.Validatiom;
+﻿using MBW.EF.ExpressionValidator.Validatiom;
 using Microsoft.EntityFrameworkCore;
 
 namespace MBW.EF.ExpressionValidator.PomeloMysql
 {
     internal class MysqlValidator<TContext> : CommonExpressionValidator<TContext> where TContext : DbContext
     {
-        public MysqlValidator() : base("MySql")
+        private readonly ServerVersion _serverVersion;
+
+        public MysqlValidator(ServerVersion serverVersion) : base("MySql")
         {
+            _serverVersion = serverVersion;
         }
 
         protected override void Configure(DbContextOptionsBuilder optionsBuilder)
         {
-            const string dummyConnectionString = "database=Issue1514";
-            optionsBuilder.UseMySql(dummyConnectionString, new MySqlServerVersion(new Version(8, 0, 25)));
+            const string dummyConnectionString = "server=irrelevant";
+            optionsBuilder.UseMySql(dummyConnectionString, _serverVersion);
         }
     }
 }

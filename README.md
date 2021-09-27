@@ -4,6 +4,8 @@ This project aims to help developers avoid a pesky issue with EntityFramework: u
 
 Using this project, it is possible to validate that all queries made can succesfully translate into queries for other databases.
 
+Note: This project is not intended to be used in any other environment that testing or local development.
+
 # Features
 
 * Plugins to translate queries to Mysql, Sqlite and Sql Server

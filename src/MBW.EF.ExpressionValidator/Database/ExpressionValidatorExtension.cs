@@ -38,9 +38,14 @@ namespace MBW.EF.ExpressionValidator.Database
             {
             }
 
-            public override long GetServiceProviderHashCode()
+            public override int GetServiceProviderHashCode()
             {
                 return 0;
+            }
+
+            public override bool ShouldUseSameServiceProvider(DbContextOptionsExtensionInfo other)
+            {
+                return false;
             }
 
             public override void PopulateDebugInfo(IDictionary<string, string> debugInfo)

@@ -16,7 +16,7 @@ Note: This project is not intended to be used in any other environment that test
 | Name | Nuget | Note |
 |---|---|---|
 | MBW.EF.ExpressionValidator | [![Nuget](https://img.shields.io/nuget/v/MBW.EF.ExpressionValidator)](https://www.nuget.org/packages/MBW.EF.ExpressionValidator/) | Core functionality |
-| MBW.EF.ExpressionValidator.Sqlite | [![Nuget](https://img.shields.io/nuget/v/MBW.EF.ExpressionValidator.Sqlite)](https://www.nuget.org/packages/MBW.EF.ExpressionValidator.Sqlite/) | Addon using `MBW.EF.ExpressionValidator.Sqlite` |
+| MBW.EF.ExpressionValidator.Sqlite | [![Nuget](https://img.shields.io/nuget/v/MBW.EF.ExpressionValidator.Sqlite)](https://www.nuget.org/packages/MBW.EF.ExpressionValidator.Sqlite/) | Addon using `Microsoft.EntityFrameworkCore.Sqlite` |
 | MBW.EF.ExpressionValidator.SqlServer | [![Nuget](https://img.shields.io/nuget/v/MBW.EF.ExpressionValidator.SqlServer)](https://www.nuget.org/packages/MBW.EF.ExpressionValidator.SqlServer/) | Addon using `Microsoft.EntityFrameworkCore.SqlServer` |
 | MBW.EF.ExpressionValidator.PomeloMysql | [![Nuget](https://img.shields.io/nuget/v/MBW.EF.ExpressionValidator.PomeloMysql)](https://www.nuget.org/packages/MBW.EF.ExpressionValidator.PomeloMysql/) | Addon using `Pomelo.EntityFrameworkCore.MySql` |
 
